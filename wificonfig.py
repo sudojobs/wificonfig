@@ -30,3 +30,7 @@ os.system('iwconfig ' + interface + ' essid ' + name + ' key ' + password)
 #os.system('sudo ifup wlan0')
 #os.system('sudo systemctl daemon-reload')
 #if required WIFI Country
+#/etc/wpa_supplicant/wpa_supplicant.conf and make below entries in it.
+#ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+#update_config=1
+#country=YOUR COUNTRY CODE HERE 
