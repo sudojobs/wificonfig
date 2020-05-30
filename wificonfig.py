@@ -1,13 +1,16 @@
 import json
 import requests
 import os
+import subprocess 
+
+#ssid="MickeyMouse" passkey="MinnieMouse" 
+
 #POST api/getWifiDetail
 #Accept: application/json
 #Content-Type: application/json
 #{
 #"hardware_id": "202481595041676"
 #}
-f= open("interfaces","w+")
 
 url = 'http://dapirpi.rozcomapp.com/api/getWifiDetail'
 object = {'hardware_id': '202481595041676'}
@@ -16,8 +19,12 @@ interface = 'wlan0'
 output = requests.post(url, data = object)
 values = output.json()
 ssid=values['wifi_id']
-password=values['wifi_password']
-os.system('iwconfig ' + interface + ' essid ' + name + ' key ' + password)
+passkey=values['wifi_password']
+p1 = subprocess.Popen(["wpa_passphrase", ssid, passkey], stdout=subprocess.PIPE)
+p2 = subprocess.Popen(["sudo","tee","-a","/etc/wpa_supplicant/wpa_supplicant.conf",">","/dev/null"], stdin=p1.stdout, stdout=subprocess.PIPE) 
+p1.stdout.close() # Give p1 a SIGPIPE if p2 dies. 
+output,err = p2.communicate()
+#os.system('iwconfig ' + interface + ' essid ' + ssid + ' key ' + password)
 #f.write("auto wlan0\n")
 #f.write("iface wlan0 inet dhcp\n")
 #f.write("wpa-ssid %s\n" % ssid)
